@@ -6,17 +6,23 @@ let a = +x;
 let b = +y;
 let arr = [];
 
-if (typeof a !== "number" || typeof b !== "number" || isNaN(a) || isNaN(b)) {
+// внесла небольшие поправки после замечаний от наставника
+
+if (isNaN(a) || isNaN(b)) {
   console.log('Not a number!');
 } else {
-  nextPrime:
     for (let i = a; i <= b; i++) {
-
-    for (let j = 2; j < i; j++) {
-      if (i % j == 0) continue nextPrime;
+      let flag = 1;
+      for (j = 2; j < i; j++) {
+        if (i % j == 0) {
+          flag = 0;
+        }
+      }
+      if (flag == 1) {
+        arr.push(i);
+      }
     }
-    arr.push(i);
-  }
+  
   if (arr.length == 0) {
     console.log(colors.red('No prime numbers'));
   }
