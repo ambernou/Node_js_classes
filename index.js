@@ -6,10 +6,15 @@ let a = +x;
 let b = +y;
 let arr = [];
 
-// внесла небольшие поправки после замечаний от наставника
-
+if (a > b) {
+  a = +y;
+  b = +x;
+}
+ 
 if (isNaN(a) || isNaN(b)) {
   console.log('Not a number!');
+} else if (a <= 1 || b <= 1) {
+  console.log('Numbers must be greater than 1');
 } else {
     for (let i = a; i <= b; i++) {
       let flag = 1;
