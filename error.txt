@@ -1,0 +1,13 @@
+events.js:377
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: EMFILE: too many open files, open 'D:\_documents\Наташа\Geekbrains обучение\13 Node.JS\Урок 3. Работа с файловой системой. Класс Buffer. Модуль Streams\89.123.1.41_req1.log'
+Emitted 'error' event on WriteStream instance at:
+    at internal/fs/streams.js:335:14
+    at FSReqCallback.oncomplete (fs.js:180:23) {
+  errno: -4066,
+  code: 'EMFILE',
+  syscall: 'open',
+  path: 'D:\\_documents\\Наташа\\Geekbrains обучение\\13 Node.JS\\Урок 3. Работа с файловой системой. Класс Buffer. Модуль Streams\\89.123.1.41_req1.log'
+}
