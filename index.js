@@ -1,7 +1,7 @@
 const fs = require('fs');
+const readline = require('readline');
 const ACCESS_LOG_TEST = './access_test.log';
 const ACCESS_LOG = './access.log';
-const readline = require('readline');
 const ip1 = '89.123.1.41';
 const ip2 = '34.48.240.111';
 
@@ -11,20 +11,26 @@ const readStream = fs.createReadStream(ACCESS_LOG, {
     highWaterMark: 1024,
 });
 
-const writeStream = (ip) => (fs.createWriteStream(`${ip}_req1.log`, {
+const writeStream1 = fs.createWriteStream(`${ip1}_requests.log`, {
     encoding: 'utf-8',
     flags: 'a',
-}));
+});
+
+const writeStream2 = fs.createWriteStream(`${ip2}_requests.log`, {
+    encoding: 'utf-8',
+    flags: 'a',
+});
 
 const rl = readline.createInterface({
     input: readStream,
-    //output:
+    // output:
 });
 
 rl.on('line', (input) => {
+    // console.log(`${input}`);
     if (input.includes(ip1)) {
-        writeStream(ip1).write(`${input}\n`);
+        writeStream1.write(`${input}\n`);
     } else if (input.includes(ip2)) {
-        writeStream(ip2).write(`${input}\n`);
+        writeStream2.write(`${input}\n`);
     }
 });
