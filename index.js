@@ -3,57 +3,55 @@ const url = require('url');
 const fs = require('fs');
 const path = require('path');
 
-const currentDir = process.cwd();
-
-let filesAndDir = fs.readdirSync(currentDir);
-
-let urlList = '<ul>';
-filesAndDir.forEach(item => {
-    urlList += `<li><a href=${item}>${item}</a></li>`;
-});
-urlList += '</ul>';
+let currentDir = process.cwd();
 
 const server = http.createServer((req, res) => {
+    
+    let filesAndDir = fs.readdirSync(currentDir);
+    let dirName = '';
+    
+    function getList (files, dn) {
+        let urlList = '<ul>';
+        files.forEach(item => {
+            urlList += `<li><a href=${item}>${dn}/${item}</a></li>`;
+        });
+        urlList += '</ul>';
+        return urlList;
+    };
 
-    const getList = () => {
         if (req.url === '/') {
-            //console.log(urlList);
             res.writeHead(200, 'OK1', {'Content-Type': 'text/html'});
-            res.write(urlList);
-        }
+            res.write(getList(filesAndDir, dirName));
+            res.end();
+        } 
 
         filesAndDir.forEach(item => {
             if (req.url === `/${item}`) {
                 const filePath = path.join(currentDir, item);
+                // console.log(filePath);
                 
                 if (fs.lstatSync(filePath).isFile()) {
-                    const data = fs.readFileSync(filePath, 'utf-8');
                     //console.log('file');
+                    const data = fs.readFileSync(filePath, 'utf-8');
                     res.writeHead(200, 'OK2', {'Content-Type': 'text/plain'});
                     res.write(`${filePath}\n\n${data}`);
                     res.end();
                 } else {
                     //console.log('dir');
-                    filesAndDir = fs.readdirSync(filePath);
+                    dirName = item;
+                    currentDir = filePath;
+                    filesAndDir = fs.readdirSync(currentDir);
+
                     if (filesAndDir.length === 0) {
                         res.end('dir is empty');
                     } else {
-                        urlList = '<ul>';
-                        filesAndDir.forEach(item => {
-                            urlList += `<li><a href=${item}>${item}</a></li>`;
-                        });
-                        urlList += '</ul>';
-                        console.log('path: ', filePath);
-                        console.log('list: ', filesAndDir);
-                        console.log('url: ', urlList);
-                        getList();
+                        res.writeHead(200, 'OK3', {'Content-Type': 'text/html'});
+                        res.write(getList(filesAndDir, dirName));
+                        res.end();
                     }
                 }
             }
         });
-    }
-
-    getList();
 
 });
 
