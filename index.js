@@ -5,19 +5,20 @@ const path = require('path');
 
 let currentDir = process.cwd();
 
+let filesAndDir = fs.readdirSync(currentDir);
+// let dirName = '';
+let dirName = currentDir;
+    
+function getList (files, dn) {
+    let urlList = '<ul>';
+    files.forEach(item => {
+        urlList += `<li><a href=${item}>${dn}\\${item}</a></li>`;
+    });
+    urlList += '</ul>';
+    return urlList;
+};
+
 const server = http.createServer((req, res) => {
-    
-    let filesAndDir = fs.readdirSync(currentDir);
-    let dirName = '';
-    
-    function getList (files, dn) {
-        let urlList = '<ul>';
-        files.forEach(item => {
-            urlList += `<li><a href=${item}>${dn}/${item}</a></li>`;
-        });
-        urlList += '</ul>';
-        return urlList;
-    };
 
         if (req.url === '/') {
             res.writeHead(200, 'OK1', {'Content-Type': 'text/html'});
