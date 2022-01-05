@@ -12,6 +12,7 @@ const server = http.createServer((req, res) => {
 
 const io = socket(server);
 const userList = [];
+let userList2 = [];
 
 io.on('connection', client => {
     // console.log(client);
@@ -25,6 +26,12 @@ io.on('connection', client => {
                 id: client.id,
             }
         );
+
+        // пока выгружла ссылку на ДЗ подумала,
+        // что наверняка есть другой метод получения всех подключенных пользователей.
+        // Нашла такой, думаю как связать с именем пользователя:
+        userList2 = Array.from(io.sockets.sockets.keys());
+        console.log(userList2);
 
         client.broadcast.emit('newUser connect', client.username);
         client.emit('newUser connect', client.username);
@@ -49,7 +56,6 @@ io.on('connection', client => {
         let index = userList.findIndex(item => item.author == client.username);
         userList.splice(index, 1);
         client.broadcast.emit('user list', userList);
-        client.emit('user list', userList);
     });
 });
 
