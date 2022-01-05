@@ -2,35 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Socket</title>
-    <script src="https://cdn.socket.io/4.2.0/socket.io.min.js" integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj" crossorigin="anonymous"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .connect { 
+            color: green;
+        }
+        .disconnect {
+        color: red;
+        }
+    </style>
+    <script src="https://cdn.socket.io/4.4.0/socket.io.min.js" integrity="sha384-1fOn6VtTq3PWwfsOrk45LnYcGosJwzMHv+Xh/Jx5303FVOXzEnw0EpLv30mtjmlj" crossorigin="anonymous"></script>
 </head>
 <body>
-<input id="input" type="text" autofocus>
-<button id="button">Send</button>
-<div id="messages"></div>
-<script>
-    const socket = io('localhost:5555');
-    const messagesBlock = document.querySelector('#messages');
-    const sendButton = document.querySelector('#button');
-    const input = document.querySelector('#input');
+    <input id="input" type="text" autofocus>
+    <button id="button">Send</button>
+    <div id="messages"></div>
+    <div id="userlist"></div>
+    <script>
+        const socket = io('localhost:5555');
+        const messagesBlock = document.querySelector('#messages');
+        const userListBlock = document.querySelector('#userlist');
+        const sendButton = document.querySelector('#button');
+        const input = document.querySelector('#input');
+        let userName = prompt('Enter your name:');
+        socket.emit('set username', userName);
 
-    sendButton.addEventListener('click', () => {
-        const data = {
-            message: input.value,
-        };
+        sendButton.addEventListener('click', () => {
+            const data = {
+                message: input.value,
+            };
 
-        socket.emit('client-msg', data);
-        input.value = '';
-    })
+            socket.emit('client-msg', data);
+            input.value = '';
+        });
 
-    socket.on('connect', () => {
-        console.log('Connected');
-    });
+        socket.on('connect', () => {
+            console.log('connected');
+        });
 
-    socket.on('server-msg', (data) => {
-        messagesBlock.insertAdjacentHTML('afterbegin', `<div>${data.message}</div>`);
-    });
-</script>
+        socket.on('newUser connect', (user) => {
+            messagesBlock.insertAdjacentHTML('afterbegin', `<div class="connect">New user ${user} connection!</div>`);
+        });
+
+        socket.on('server-msg', (data) => {
+            messagesBlock.insertAdjacentHTML('afterbegin', `<div>${data.author}: ${data.message}</div>`);
+        });
+
+        socket.on('user list', (userList) => {
+            userListBlock.innerHTML = "<h3>User's list</h3>";
+            userList.forEach(item => {
+                userListBlock.insertAdjacentHTML('beforeend', `<div>${item.author}</div>`);
+            });
+        });
+
+        socket.on('user disconnect', (user) => {
+            messagesBlock.insertAdjacentHTML('afterbegin', `<div class="disconnect">User ${user} disconnection!</div>`);
+        });
+    </script>
 </body>
 </html>
