@@ -46,6 +46,10 @@ io.on('connection', client => {
 
     client.on('disconnect', () => {
         client.broadcast.emit('user disconnect', client.username);
+        let index = userList.findIndex(item => item.author == client.username);
+        userList.splice(index, 1);
+        client.broadcast.emit('user list', userList);
+        client.emit('user list', userList);
     });
 });
 
